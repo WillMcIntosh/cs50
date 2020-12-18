@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 
-// Max number of candidates
 #define MAX 9
 
 // preferences[i][j] is number of voters who prefer i over j
@@ -11,7 +10,6 @@ int preferences[MAX][MAX];
 // locked[i][j] means i is locked in over j
 bool locked[MAX][MAX];
 
-// Each pair has a winner, loser
 typedef struct
 {
     int winner;
@@ -19,14 +17,12 @@ typedef struct
 }
 pair;
 
-// Array of candidates
 string candidates[MAX];
 pair pairs[MAX * (MAX - 1) / 2];
 
 int pair_count;
 int candidate_count;
 
-// Function prototypes
 bool vote(int rank, string name, int ranks[]);
 void record_preferences(int ranks[]);
 void add_pairs(void);
@@ -183,12 +179,10 @@ void sort_pairs(void)
         {
             if (strength[i] < strength[j])
             {
-                //swap appropriate pairs
                 pair tmp = pairs[i];
                 pairs[i] = pairs[j];
                 pairs[j] = tmp;
 
-                //swap strength too
                 int tmp2 = strength[i];
                 strength[i] = strength[j];
                 strength[j] = tmp2;
@@ -207,7 +201,6 @@ bool check_cycle(int index, bool visited[])
     {
         return true;
     }
-    // keep track of where we've visted
     visited[index] = true;
     for (int i = 0; i < candidate_count; i++)
     {
@@ -237,9 +230,7 @@ void lock_pairs(void)
     {
         int win = pairs[i].winner;
         int lose = pairs[i].loser;
-        // set value to true
         locked[win][lose] = true;
-        // if it wont create a cycle...
         if (has_cycle(i))
         {
             locked[win][lose] = false;
@@ -252,7 +243,6 @@ bool is_source(int index)
 {
     for (int i = 0; i < candidate_count; i++)
     {
-        // if a candidate is locked over this one
         if (locked[i][index])
         {
             return false;
