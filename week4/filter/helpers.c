@@ -13,19 +13,14 @@ void group_edge(int size, RGBTRIPLE group[size], RGBTRIPLE *pixel);
 // Convert image to grayscale
 void grayscale(int height, int width, RGBTRIPLE image[height][width])
 {
-    // get total size of image
     int size = height * width;
 
-    // create a pointer to image[0][0] to iterate over
     RGBTRIPLE *point = *image;
 
-    // finally iterate over image and change values to average
     int avg = 0;
     for (int i = 0; i < size; i++, point++)
     {
-        // get average
         avg = average(*point);
-        // set values (can set using point->value also)
         (*point).rgbtRed = avg;
         (*point).rgbtGreen = avg;
         (*point).rgbtBlue = avg;
@@ -37,10 +32,8 @@ void grayscale(int height, int width, RGBTRIPLE image[height][width])
 // Reflect image horizontally
 void reflect(int height, int width, RGBTRIPLE image[height][width])
 {
-    // iterate over image row by row
     for (int i = 0; i < height; i++)
     {
-        // reflect the row
         reflect_row(width, image[i]);
     }
 
@@ -61,19 +54,15 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
         }
     }
 
-    // find all neighbours
-    // bounds are 0 to height, 0 to width
     int x, y, n;
     RGBTRIPLE group[9];
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
         {
-            // find all neighbours in copy image
             x = j - 1;
             y = i - 1;
             n = 0;
-            // check out of bounds before accessing for value
             for (y = i - 1; y <= i + 1; y++)
             {
                 for (x = j - 1; x <= j + 1; x++)
@@ -85,8 +74,6 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
                     }
                 }
             }
-            // compute average of group
-            // set values of pixel in original image
             group_average(n, group, &image[i][j]);
         }
     }
@@ -108,22 +95,17 @@ void edges(int height, int width, RGBTRIPLE image[height][width])
         }
     }
 
-    // blank RGBTRIPLE
     RGBTRIPLE blank = {0, 0, 0};
 
-    // find all neighbours
-    // bounds are 0 to height, 0 to width
     int x, y, n;
     RGBTRIPLE group[9];
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
         {
-            // find all neighbours in copy image
             x = j - 1;
             y = i - 1;
             n = 0;
-            // check out of bounds before accessing for value
             for (y = i - 1; y <= i + 1; y++)
             {
                 for (x = j - 1; x <= j + 1; x++)
@@ -139,8 +121,6 @@ void edges(int height, int width, RGBTRIPLE image[height][width])
                     n++;
                 }
             }
-            // compute sobel of group
-            // set values of pixel in original image
             group_edge(n, group, &image[i][j]);
         }
     }
@@ -156,7 +136,6 @@ int average(RGBTRIPLE rgb)
     b = rgb.rgbtBlue;
 
     float pre_comp = (r + g + b) / 3.0;
-    // cast to int and round
     int post_comp = (int)(pre_comp + 0.5);
 
     return post_comp;
@@ -166,10 +145,9 @@ int average(RGBTRIPLE rgb)
 void reflect_row(int size, RGBTRIPLE row[size])
 {
     int i, j;
-    // start at ends and work in until I cross over
+    // start at ends and work in until cross over
     for (i = 0, j = size - 1; i != j && i < j; i++, j--)
     {
-        // swap values
         RGBTRIPLE temp = row[j];
         row[j] = row[i];
         row[i] = temp;
@@ -195,10 +173,8 @@ int int_avg(int size, int items[size])
 // set RGBTRIPLE struct with average values of group
 void group_average(int size, RGBTRIPLE group[size], RGBTRIPLE *pixel)
 {
-    // init 3 arrays for red, blue, green
     int reds[size], blues[size], greens[size];
 
-    // populate arrays
     for (int i = 0; i < size; i++)
     {
         reds[i] = group[i].rgbtRed;
@@ -254,10 +230,8 @@ int sobel(int size, int items[size])
 // set RGBTRIPLE struct with new values based on sobel alg
 void group_edge(int size, RGBTRIPLE group[size], RGBTRIPLE *pixel)
 {
-    // init 3 arrays for red, blue, green
     int reds[size], blues[size], greens[size];
 
-    // populate arrays
     for (int i = 0; i < size; i++)
     {
         reds[i] = group[i].rgbtRed;

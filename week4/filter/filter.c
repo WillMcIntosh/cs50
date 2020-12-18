@@ -7,7 +7,6 @@
 int main(int argc, char *argv[])
 {
 
-    // Define allowable filters
     char *filters = "begr";
 
     // Get filter flag and check validity
@@ -25,18 +24,15 @@ int main(int argc, char *argv[])
         return 2;
     }
 
-    // Ensure proper usage
     if (argc != optind + 2)
     {
         fprintf(stderr, "Usage: filter [flag] infile outfile\n");
         return 3;
     }
 
-    // Remember filenames
     char *infile = argv[optind];
     char *outfile = argv[optind + 1];
 
-    // Open input file
     FILE *inptr = fopen(infile, "r");
     if (inptr == NULL)
     {
@@ -44,7 +40,6 @@ int main(int argc, char *argv[])
         return 4;
     }
 
-    // Open output file
     FILE *outptr = fopen(outfile, "w");
     if (outptr == NULL)
     {
@@ -97,56 +92,41 @@ int main(int argc, char *argv[])
         fseek(inptr, padding, SEEK_CUR);
     }
 
-    // Filter image
     switch (filter)
     {
-        // Blur
         case 'b':
             blur(height, width, image);
             break;
 
-        // Edges
         case 'e':
             edges(height, width, image);
             break;
 
-        // Grayscale
         case 'g':
             grayscale(height, width, image);
             break;
 
-        // Reflect
         case 'r':
             reflect(height, width, image);
             break;
     }
 
-    // Write outfile's BITMAPFILEHEADER
     fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
-
-    // Write outfile's BITMAPINFOHEADER
     fwrite(&bi, sizeof(BITMAPINFOHEADER), 1, outptr);
 
     // Write new pixels to outfile
     for (int i = 0; i < height; i++)
     {
-        // Write row to outfile
         fwrite(image[i], sizeof(RGBTRIPLE), width, outptr);
 
-        // Write padding at end of row
         for (int k = 0; k < padding; k++)
         {
             fputc(0x00, outptr);
         }
     }
 
-    // Free memory for image
     free(image);
-
-    // Close infile
     fclose(inptr);
-
-    // Close outfile
     fclose(outptr);
 
     return 0;
