@@ -44,7 +44,6 @@ int coleman_liau_index(int s_len, string sample)
     int words = 0;
     int sentences = 0;
 
-    // previous character initialised to " "
     char prev_char = ' ';
 
     for (int i = 0; i < s_len; i++)
@@ -61,21 +60,17 @@ int coleman_liau_index(int s_len, string sample)
         {
             sentences++;
         }
-        // set previous char for word inc
         prev_char = sample[i];
     }
 
-    // calculate L and S, taking care to cast to float
     float L = ((float) letters / (float) words) * 100.0f;
     float S = ((float) sentences / (float) words) * 100.0f;
 
     float index = 0.0588 * L - 0.296 * S - 15.8;
 
-    // round index to nearest whole number
     int rounded_index = 0;
     if (index > 1.0)
     {
-        // cast to int which will round down to nearest whole
         rounded_index = (int)(index + 0.5f);
     }
 
